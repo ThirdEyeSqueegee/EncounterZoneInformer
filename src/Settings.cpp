@@ -16,13 +16,13 @@ void Settings::LoadSettings() noexcept
         logger::debug("Debug logging enabled");
     }
 
-    notification_color       = ini.GetValue("General", "sNotificationColor");
+    notification             = ini.GetValue("General", "sNotification");
     notification_delay       = ini.GetLongValue("General", "uNotificationDelay");
     level_gap                = ini.GetLongValue("General", "uLevelGap");
     always_show_notification = ini.GetBoolValue("General", "bAlwaysShowNotification");
 
     logger::info("Loaded settings");
-    logger::info("\tsNotificationColor = {}", notification_color);
+    logger::info("\tsNotification = {}", notification);
     logger::info("\tuNotificationDelay = {}", notification_delay);
     logger::info("\tuLevelGap = {}", level_gap);
     logger::info("\tbAlwaysShowNotification = {}", always_show_notification);

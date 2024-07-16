@@ -7,7 +7,7 @@ public:
 
     inline static bool debug_logging{};
 
-    inline static std::string notification_color{};
+    inline static std::string notification{};
 
     inline static std::uint8_t notification_delay{};
 

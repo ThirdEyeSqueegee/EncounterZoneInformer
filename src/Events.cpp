@@ -24,14 +24,22 @@ namespace Events
                     const auto min_level{ ez->data.minLevel };
                     const auto level_diff{ ez->data.minLevel - player_level };
                     logger::debug("\tMin. level: {}, player level: {}, difference: {}", min_level, player_level, level_diff);
+                    if (Settings::notification.contains("{loc}"sv)) {
+                        logger::debug("Replacing loc with {}", cell_name);
+                        const auto pos{ Settings::notification.find("{loc}"sv) };
+                        Settings::notification = Settings::notification.replace(pos, 5, cell_name);
+                        logger::debug("\tNotification: {}", Settings::notification);
+                    }
+                    if (Settings::notification.contains("{lvl}")) {
+                        logger::debug("Replacing lvl with {}", min_level);
+                        const auto pos{ Settings::notification.find("{lvl}"sv) };
+                        Settings::notification = Settings::notification.replace(pos, 5, std::to_string(min_level));
+                        logger::debug("\tNotification: {}", Settings::notification);
+                    }
                     if (Settings::always_show_notification || level_diff >= Settings::level_gap) {
                         std::jthread([=] {
                             std::this_thread::sleep_for(std::chrono::seconds(Settings::notification_delay));
-                            SKSE::GetTaskInterface()->AddTask([=] {
-                                RE::DebugNotification(fmt::format("<font color='#{}'>WARNING:</font> {} is a <font color='#{}'>level {}</font> zone", Settings::notification_color,
-                                                                  cell_name, Settings::notification_color, min_level)
-                                                          .c_str());
-                            });
+                            SKSE::GetTaskInterface()->AddTask([=] { RE::DebugNotification(Settings::notification.c_str()); });
                         }).detach();
                     }
                 }
