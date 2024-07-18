@@ -17,8 +17,8 @@ void Settings::LoadSettings() noexcept
     }
 
     notification             = ini.GetValue("General", "sNotification");
-    notification_delay       = ini.GetLongValue("General", "uNotificationDelay");
-    level_gap                = ini.GetLongValue("General", "uLevelGap");
+    notification_delay       = static_cast<std::uint8_t>(ini.GetLongValue("General", "uNotificationDelay"));
+    level_gap                = static_cast<std::uint8_t>(ini.GetLongValue("General", "uLevelGap"));
     always_show_notification = ini.GetBoolValue("General", "bAlwaysShowNotification");
 
     logger::info("Loaded settings");
