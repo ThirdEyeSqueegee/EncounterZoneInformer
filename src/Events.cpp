@@ -24,14 +24,17 @@ namespace Events
                     const auto min_level{ ez->data.minLevel };
                     const auto level_diff{ min_level - player_level };
                     logger::debug("\tMin. level: {}, player level: {}, difference: {}", min_level, player_level, level_diff);
-                    notif = Settings::notification;
-                    if (Settings::notification.contains("{loc}"sv)) {
+                    std::vector<std::string> notifs;
+                    std::ranges::sample(Settings::notifications, std::back_inserter(notifs), 1, gen);
+                    notif = notifs.front();
+                    logger::debug("Using notification: {}", notif);
+                    if (notif.contains("{loc}"sv)) {
                         logger::debug("Replacing loc with {}", cell_name);
                         const auto pos{ notif.find("{loc}"sv) };
                         notif.replace(pos, 5, cell_name);
                         logger::debug("\tNotification: {}", notif);
                     }
-                    if (Settings::notification.contains("{lvl}"sv)) {
+                    if (notif.contains("{lvl}"sv)) {
                         logger::debug("Replacing lvl with {}", min_level);
                         const auto pos{ notif.find("{lvl}"sv) };
                         notif.replace(pos, 5, std::to_string(min_level));

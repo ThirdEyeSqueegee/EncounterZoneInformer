@@ -7,6 +7,7 @@ void Settings::LoadSettings() noexcept
     CSimpleIniA ini;
 
     ini.SetUnicode();
+    ini.SetMultiKey();
     ini.LoadFile(R"(.\Data\SKSE\Plugins\EncounterZoneInformer.ini)");
 
     debug_logging = ini.GetBoolValue("Log", "Debug");
@@ -16,13 +17,21 @@ void Settings::LoadSettings() noexcept
         logger::debug("Debug logging enabled");
     }
 
-    notification             = ini.GetValue("General", "sNotification");
+    CSimpleIniA::TNamesDepend values{};
+    ini.GetAllValues("General", "sNotification", values);
+
+    for (const auto& v : values) {
+        notifications.emplace_back(v.pItem);
+    }
+
     notification_delay       = static_cast<std::uint8_t>(ini.GetLongValue("General", "uNotificationDelay"));
     level_gap                = static_cast<std::uint8_t>(ini.GetLongValue("General", "uLevelGap"));
     always_show_notification = ini.GetBoolValue("General", "bAlwaysShowNotification");
 
     logger::info("Loaded settings");
-    logger::info("\tsNotification = {}", notification);
+    for (const auto& n : notifications) {
+        logger::info("\tsNotification = {}", n);
+    }
     logger::info("\tuNotificationDelay = {}", notification_delay);
     logger::info("\tuLevelGap = {}", level_gap);
     logger::info("\tbAlwaysShowNotification = {}", always_show_notification);

@@ -3,7 +3,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 
 project(
   EncounterZoneInformer
-  VERSION 1.0.2
+  VERSION 1.0.3
   LANGUAGES CXX
 )
 set(CMAKE_CXX_STANDARD 23)
