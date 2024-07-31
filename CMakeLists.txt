@@ -3,7 +3,7 @@ message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 
 project(
   EncounterZoneInformer
-  VERSION 1.0.3
+  VERSION 1.0.4
   LANGUAGES CXX
 )
 set(CMAKE_CXX_STANDARD 23)
@@ -92,11 +92,11 @@ install(
   DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
+if (CMAKE_BUILD_TYPE STREQUAL Debug)
   set(BUILD_NAME Debug)
-else()
+else ()
   set(BUILD_NAME Release)
-endif()
+endif ()
 
 add_custom_command(
   TARGET ${PROJECT_NAME}

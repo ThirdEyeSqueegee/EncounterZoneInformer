@@ -1,5 +1,7 @@
 #pragma once
 
+using ul = unsigned long;
+
 class Settings : public Singleton<Settings>
 {
 public:
@@ -7,11 +9,7 @@ public:
 
     inline static bool debug_logging{};
 
-    inline static std::vector<std::string> notifications{};
+    inline static std::map<ul, std::vector<std::string>> notifications{};
 
-    inline static std::uint8_t notification_delay{};
-
-    inline static std::uint8_t level_gap{};
-
-    inline static bool always_show_notification{};
+    inline static ul notification_delay{};
 };

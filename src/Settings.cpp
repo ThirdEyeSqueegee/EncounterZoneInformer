@@ -17,23 +17,36 @@ void Settings::LoadSettings() noexcept
         logger::debug("Debug logging enabled");
     }
 
-    CSimpleIniA::TNamesDepend values{};
-    ini.GetAllValues("General", "sNotification", values);
+    CSimpleIniA::TNamesDepend sections{};
+    ini.GetAllSections(sections);
 
-    for (const auto& v : values) {
-        notifications.emplace_back(v.pItem);
+    for (const auto& s : sections) {
+        if (!std::string_view(s.pItem).contains("LevelGap"sv)) {
+            continue;
+        }
+        logger::debug("Parsing section {}", s.pItem);
+
+        CSimpleIniA::TNamesDepend values{};
+        ini.GetAllValues(s.pItem, "sNotification", values);
+        logger::debug("Got {} values for section {}", values.size(), s.pItem);
+
+        const auto gap{ std::stoul(std::string(s.pItem).substr(8)) };
+        logger::debug("Gap for section {} is {}", s.pItem, gap);
+
+        for (const auto& v : values) {
+            notifications[gap].emplace_back(v.pItem);
+        }
     }
 
-    notification_delay       = static_cast<std::uint8_t>(ini.GetLongValue("General", "uNotificationDelay"));
-    level_gap                = static_cast<std::uint8_t>(ini.GetLongValue("General", "uLevelGap"));
-    always_show_notification = ini.GetBoolValue("General", "bAlwaysShowNotification");
+    notification_delay = static_cast<std::uint8_t>(ini.GetLongValue("General", "uNotificationDelay"));
 
     logger::info("Loaded settings");
-    for (const auto& n : notifications) {
-        logger::info("\tsNotification = {}", n);
+    logger::info("\tuNotificationDelay = {} s", notification_delay);
+    for (const auto& [gap, notifs] : notifications) {
+        logger::info("\tLevel gap = {}", gap);
+        for (const auto& n : notifs) {
+            logger::info("\t\tNotification = {}", n);
+        }
     }
-    logger::info("\tuNotificationDelay = {}", notification_delay);
-    logger::info("\tuLevelGap = {}", level_gap);
-    logger::info("\tbAlwaysShowNotification = {}", always_show_notification);
     logger::info("");
 }
